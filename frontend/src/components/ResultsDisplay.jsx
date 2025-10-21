@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-const ResultsDisplay = ({ results, isVisible, onToggle }) => {
+const ResultsDisplay = ({ results, isVisible, onToggle, internalLinks }) => {
   if (!results) return null;
 
   return (
@@ -85,6 +85,32 @@ const ResultsDisplay = ({ results, isVisible, onToggle }) => {
             <div className="mt-6 pt-6 border-t border-gray-200">
               <h3 className="text-lg font-semibold text-gray-900 mb-3">Meta Description</h3>
               <p className="text-gray-600 italic">{results.meta_description}</p>
+            </div>
+          )}
+
+          {/* Internal Links Section */}
+          {internalLinks && (
+            <div className="mt-6 pt-6 border-t border-gray-200">
+              <h3 className="text-lg font-semibold text-gray-900 mb-4">Internal Linking Suggestions</h3>
+              <div className="space-y-4">
+                {internalLinks.internal_links?.map((link, index) => (
+                  <div key={index} className="bg-blue-50 p-4 rounded-lg border border-blue-200">
+                    <div className="flex justify-between items-start mb-2">
+                      <h4 className="font-medium text-blue-900">{link.title}</h4>
+                      <span className="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded">
+                        {Math.round(link.relevance_score * 100)}% match
+                      </span>
+                    </div>
+                    <p className="text-sm text-blue-700 mb-3">{link.snippet}</p>
+                    <div className="bg-white p-3 rounded border">
+                      <p className="text-xs text-gray-600 mb-1">Copy this HTML link:</p>
+                      <code className="text-xs bg-gray-100 p-2 rounded block break-all">
+                        {link.html}
+                      </code>
+                    </div>
+                  </div>
+                ))}
+              </div>
             </div>
           )}
         </div>
