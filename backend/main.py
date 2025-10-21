@@ -5,6 +5,7 @@ import uvicorn
 
 from web_scraper import scrape_url_content
 from text_analyzer import analyze_text_content
+from exa_internal_linking import find_internal_linking_suggestions
 
 app = FastAPI(title="Internal Linking Tool API", version="1.0.0")
 
@@ -22,6 +23,10 @@ class URLRequest(BaseModel):
 
 class TextRequest(BaseModel):
     content: str
+
+class InternalLinkingRequest(BaseModel):
+    content: str
+    url: str
 
 @app.get("/")
 async def root():
@@ -45,6 +50,17 @@ async def analyze_text(request: TextRequest):
     """
     try:
         result = await analyze_text_content(request.content)
+        return result
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+@app.post("/api/internal-linking")
+async def get_internal_linking_suggestions(request: InternalLinkingRequest):
+    """
+    Get internal linking suggestions for content from the same domain
+    """
+    try:
+        result = await find_internal_linking_suggestions(request.content, request.url)
         return result
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
